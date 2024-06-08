@@ -29,7 +29,8 @@ En proceso
 > devuelve 1 objecto con las propiedades del producto requerido por el pid, si el producto no existe ...
 
 -   **<code>POST</code> /api/products** 
-> recibe un body con las propiedades ... , en caso de crear el producto, lo devuelve con el id generado, sino ...
+> recibe un body con las propiedades title, description, code, price, stock, category, status(este opcional)
+> en caso de crear el producto, lo devuelve con el id generado, sino devuelve un array con los problemas encontrados
 
 -   **<code>PUT</code> /api/products/:pid** 
 > recibe el id por parametro del producto a modificar, y un body con las propiedades a cambiar, si lo modifica devuelve el producto modificado, sino ...
