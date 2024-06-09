@@ -52,7 +52,7 @@ const productDB = {
 	update: async (id, product) => {
 		let productIndex = productList.findIndex((product) => product.id == id);
 		let editedProduct = new ProductClass(productList[productIndex]);
-		editedProduct = { ...editedProduct, ...product };
+		editedProduct = { ...editedProduct, ...product, id:id };
 		if (productIndex != -1) {
 			productList[productIndex] = editedProduct;
 			await fs.promises.writeFile(
@@ -71,11 +71,12 @@ const productDB = {
 				deleteProductsFile,
 				JSON.stringify(deleteProductList, null, 2)
 			);
-			productList = productList.splice(productIndex, 1);
+			productList.splice(productIndex, 1);
 			await fs.promises.writeFile(
 				productsFile,
 				JSON.stringify(productList, null, 2)
 			);
+			toReturn = true;
 		}
 		return toReturn;
 	},

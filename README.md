@@ -26,17 +26,19 @@ En proceso
 > devuelve un array con todos los productos listado, acepta limit como parametro en la query, con el maximo de productos que se desea listar
 
 -   **<code>GET</code> /api/products/:pid** 
-> devuelve 1 objecto con las propiedades del producto requerido por el pid, si el producto no existe ...
+> devuelve 1 objecto con las propiedades del producto requerido por el pid, si el producto no existe devuelve un status 404, y un objeto con la propiedad "error" y un mensaje de producto no encontrado
 
 -   **<code>POST</code> /api/products** 
 > recibe un body con las propiedades title, description, code, price, stock, category, status(este opcional)
 > en caso de crear el producto, lo devuelve con el id generado, sino devuelve un array con los problemas encontrados
 
 -   **<code>PUT</code> /api/products/:pid** 
-> recibe el id por parametro del producto a modificar, y un body con las propiedades a cambiar, si lo modifica devuelve el producto modificado, sino ...
+> recibe el id por parametro del producto a modificar, y un body con las propiedades a cambiar
+> si lo modifica devuelve el producto modificado, sino devuelve un array con los problemas encontrados
 
 -   **<code>DELETE</code> /api/products/:pid** 
-> recibe un id por parametro del producto a eliminar, si lo pudo eliminar devuelve un status 200, sino ...
+> recibe un id por parametro del producto a eliminar, 
+> si lo pudo eliminar devuelve un status 200 con el mensaje "Product deleted", sino devuelve un 400 con un mensaje de producto no borrado, o un 404 con un mensaje de producto no encontrado
 
 ### Carritos
 

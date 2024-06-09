@@ -118,7 +118,7 @@ const productsController = {
 			if (!product) {
 				status = 404;
 			}
-			res.status(status).json(product);
+			res.status(status).json({ error: "Product not found" });
 		} catch (error) {
 			console.log(error);
 			res.status(500).json({ error: "Internal server error" });
@@ -147,15 +147,13 @@ const productsController = {
 					thumbnails,
 					status
 				);
-				console.log(validProduct?.length);
 				if (validProduct?.length) {
 					res.status(400).json({ error: validProduct });
 				} else {
 					let newProduct = await productDB.create(validProduct);
 					res.json(newProduct);
 				}
-			}
-			else {
+			} else {
 				res.status(400).json({ error: "Missing fields" });
 			}
 		} catch (error) {
@@ -163,8 +161,65 @@ const productsController = {
 			res.status(500).json({ error: "Internal server error" });
 		}
 	},
-	modifyProduct: (req, res) => {},
-	deleteProduct: (req, res) => {},
+	modifyProduct: async (req, res) => {
+		const { pid } = req.params;
+		let oldProduct = await productDB.select(pid);
+		if (oldProduct) {
+			const {
+				title,
+				description,
+				code,
+				price,
+				stock,
+				category,
+				thumbnails,
+				status,
+			} = req.body;
+			let tempProduct = {
+				title: title || oldProduct.title,
+				description: description || oldProduct.description,
+				code: code || oldProduct.code,
+				price: price || oldProduct.price,
+				stock: stock || oldProduct.stock,
+				category: category || oldProduct.category,
+				thumbnails: thumbnails || oldProduct.thumbnails,
+				status: status || oldProduct.status,
+			};
+			let validProduct = validateProduct(
+				tempProduct.title,
+				tempProduct.description,
+				tempProduct.code,
+				tempProduct.price,
+				tempProduct.stock,
+				tempProduct.category,
+				tempProduct.thumbnails,
+				tempProduct.status
+			);
+			if (validProduct?.length) {
+				res.status(400).json({ error: validProduct });
+			} else {
+				let updatedProduct = await productDB.update(pid, validProduct);
+				res.json(updatedProduct);
+			}
+		} else {
+			res.status(404).json({ error: "Product not found" });
+		}
+	},
+	deleteProduct: async (req, res) => {
+		const { pid } = req.params;
+		let product = await productDB.select(pid);
+		if (product) {
+			let productDeleted = await productDB.delete(pid);
+			if (productDeleted) {
+				res.status(200).json({ message: "Product deleted" });
+			} else {
+				res.status(400).json({ error: "Product not deleted" });
+			}
+		}
+		else {
+			res.status(404).json({ error: "Product not found" });
+		}
+	},
 };
 
 export default productsController;
